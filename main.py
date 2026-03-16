@@ -26,9 +26,10 @@ def create_book(value: BookCreate) -> dict:
     return book
 
 
-@app.get("/books")
-def get_books(author: str | None = None, year: int | None = None) -> list[dict]:
+@app.get("/books", response_model=list[BookResponse])
+def get_books(author: str | None = None, year: int | None = None) -> list[BookResponse]:
     result = list(books.values())
+
     if author is not None:
         result = [book for book in result if book["author"] == author]
     if year is not None:
@@ -38,7 +39,7 @@ def get_books(author: str | None = None, year: int | None = None) -> list[dict]:
 
 
 @app.get("/books/{book_id}", response_model=BookResponse)
-def get_book(book_id: int)->BookResponse:
+def get_book(book_id: int) -> BookResponse:
     if book_id not in books:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found by id")
     book = books[book_id]
@@ -46,7 +47,7 @@ def get_book(book_id: int)->BookResponse:
 
 
 @app.put("/books/{book_id}", response_model=BookResponse)
-def update(book_id: int, payload: BookCreate):
+def update(book_id: int, payload: BookCreate)-> BookResponse:
     if book_id not in books:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found by id")
 
