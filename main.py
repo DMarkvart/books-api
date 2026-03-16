@@ -60,3 +60,11 @@ def update (book_id, payload:dict = Body(...)):
     books[book_id] = book
 
     return book
+
+@app.delete("/books/{book_id}")
+def delete(book_id: int)->None:
+    if book_id not in books:
+        raise HTTPException(status_code=404, detail="Book not found by id")
+    del books[book_id]
+
+    return None
