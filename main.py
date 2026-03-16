@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Body
 from schemas.book import BookCreate
 
 app = FastAPI()
@@ -42,4 +42,21 @@ def get_book(book_id: int):
     if book_id not in books:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found by id")
     book = books[book_id]
+    return book
+
+@app.put("/books/{book_id}")
+def update (book_id, payload:dict = Body(...)):
+    if book_id not in books:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found by id")
+
+
+    book = {
+        "id": book_id,
+        "title": payload["title"],
+        "author": payload["author"],
+        "year": payload["year"],
+    }
+
+    books[book_id] = book
+
     return book
